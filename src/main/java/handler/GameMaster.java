@@ -113,13 +113,13 @@ public class GameMaster {
                 if (players[i] instanceof HumanPlayer) {
                     System.out.printf("%s, your turn (input row and column separately).\n", players[i].NAME);
                     try {
-                        players[i].move(INPUT_SCANNER, CURRENT_SESSION);
+                        players[i].move(INPUT_SCANNER, fieldActionManager, CURRENT_SESSION);
                     } catch (InputMismatchException n) {
                         throw new WrongUserInputException("Only numeric coordinates are acceptable!");
                     }
                     System.out.printf("Accepted! %s made his(her) move.\n", players[i].NAME);
                 } else if (players[i] instanceof RobotPlayer) {
-                    players[i].move(INPUT_SCANNER, CURRENT_SESSION);
+                    players[i].move(INPUT_SCANNER, fieldActionManager, CURRENT_SESSION);
                     System.out.printf("%s made its move.\n", players[i].NAME);
                 }
                 CURRENT_SESSION.showField();

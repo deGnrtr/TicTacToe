@@ -11,10 +11,10 @@ public class HumanPlayer extends Player {
     }
 
     @Override
-    public void move(Scanner scanner, GameSession session) throws WrongUserInputException {
+    public void move(Scanner scanner, FieldActionManager actionManager, GameSession session) throws WrongUserInputException {
         int x = scanner.nextInt();
         int y = scanner.nextInt();
-        if (session.getActionManager().moveValidation(x, y, session)) {
+        if (actionManager.moveValidation(x, y)) {
             session.getField()[--x][--y] = this.getSignature();
             session.counter++;
         } else {

@@ -14,8 +14,8 @@ public class FieldActionManager {
         checkForDraw();
         checkForHorizontalWin(signature);
         checkForVerticalWin(signature);
-        checkForLeftDiagonalWin(signature, CURRENT_SESSION);
-        checkForRightDiagonalWin(signature, CURRENT_SESSION);
+        checkForLeftDiagonalWin(signature);
+        checkForRightDiagonalWin(signature);
     }
 
     private void checkForDraw() {
@@ -54,7 +54,7 @@ public class FieldActionManager {
         }
     }
 
-    private void checkForLeftDiagonalWin(char signature, GameSession CURRENT_SESSION) {
+    private void checkForLeftDiagonalWin(char signature) {
         for (int i = 0; i < CURRENT_SESSION.getField().length; i++) {
             String result = "";
             result = result.concat(String.valueOf(CURRENT_SESSION.getField()[i][i]));
@@ -65,7 +65,7 @@ public class FieldActionManager {
         }
     }
 
-    private void checkForRightDiagonalWin(char signature, GameSession CURRENT_SESSION) {
+    private void checkForRightDiagonalWin(char signature) {
         for (int i = CURRENT_SESSION.getField().length - 1; i >= 0; i--) {
             String result = "";
             result = result.concat(String.valueOf(CURRENT_SESSION.getField()[i][i]));
@@ -76,7 +76,7 @@ public class FieldActionManager {
         }
     }
 
-    public boolean moveValidation(int x, int y, GameSession CURRENT_SESSION) {
+    public boolean moveValidation(int x, int y) {
         return (x > 0 && y > 0 && x <= CURRENT_SESSION.getField().length && y <= CURRENT_SESSION.getField().length && CURRENT_SESSION.getField()[--x][--y] == CURRENT_SESSION.FIELD_FILLER);
     }
 }

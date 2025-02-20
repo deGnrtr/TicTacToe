@@ -1,7 +1,5 @@
 package entity;
 
-import handler.FieldActionManager;
-
 import java.util.HashMap;
 
 public class GameSession {
@@ -63,10 +61,6 @@ public class GameSession {
 
     public HashMap<String, Integer> getWinStat() {
         return winStat;
-    }
-
-    public FieldActionManager getActionManager() {
-        return actionManager;
     }
 
     public void reset() {
