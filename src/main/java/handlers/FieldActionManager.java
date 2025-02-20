@@ -5,71 +5,71 @@ import entities.Player;
 import exceptions.WrongUserInputException;
 
 public class FieldActionManager {
-    public static boolean move(int x, int y, Player player, GameSession session) throws WrongUserInputException {
-        if (moveValidation(x, y, session)){
-            session.getField()[--x][--y] = player.getSignature();
-            System.out.printf("Accepted! %s made his move.", player.getName());
-            session.counter++;
-            return true;
-        } else {
-            throw new WrongUserInputException("Wrong position. Try again, please.");
+
+    public static void check(char signature, GameSession session){
+        checkForDraw(session);
+        checkForHorizontalWin(signature, session);
+        checkForVerticalWin(signature, session);
+        checkForLeftDiagonalWin(signature, session);
+        checkForRightDiagonalWin(signature, session);
+    }
+
+    private static void checkForDraw(GameSession session){
+        if (session.counter == Math.pow(session.getField()[0].length, 2)){
+            session.setGameStatus(-1);
         }
     }
 
-    public static void check(Player player, int gameStatus, GameSession session){
-        checkForDraw(player, gameStatus, session);
-        checkForHorizontalWin(player.getSignature(), session, gameStatus);
-        checkForVerticalWin(player.getSignature(), session, gameStatus);
-        checkForDiagonalWin(player.getSignature(), session, gameStatus);
-    }
-
-    private static void checkForDraw(Player player, int gameStatus, GameSession session){
-        if (session.counter == Math.pow(session.getSize(), 2)){
-            gameStatus = -1;
-        }
-    }
-
-    private static boolean moveValidation(int x, int y, GameSession session){
-        return (x > 0 && y > 0 &&
-                x < session.getField().length &&
-                y < session.getField().length &&
-                session.getField()[--x][--y] == ' ');
-    }
-
-    private static void checkForHorizontalWin(char signature, GameSession session, int gameStatus){
-        for (int i = 0; i < session.getSize(); i++) {
-            String result = null;
-            for (int j = 0; j < session.getSize(); j++) {
+    private static void checkForHorizontalWin(char signature, GameSession session){
+        for (int i = 0; i < session.getField().length; i++) {
+            String result = "";
+            for (int j = 0; j < session.getField().length; j++) {
                 result = result.concat(String.valueOf(session.getField()[i][j]));
             }
             if (result.matches(".*[" + signature + "]{3}.*")){
-                gameStatus = 1;
-                break;
-            }
-        }
-    }
-    private static void checkForVerticalWin(char signature, GameSession session, int gameStatus){
-        for (int j = 0; j < session.getSize(); j++) {
-            String result = null;
-            for (int i = 0; i < session.getSize(); i++) {
-                result = result.concat(String.valueOf(session.getField()[i][j]));
-            }
-            if (result.matches(".*[" + signature + "]{3}.*")){
-                gameStatus = 1;
+                session.setGameStatus(1);
                 break;
             }
         }
     }
 
-    private static void checkForDiagonalWin(char signature, GameSession session, int gameStatus){
-        for (int i = 0; i < session.getSize(); i++) {
-            String result = null;
+    private static void checkForVerticalWin(char signature, GameSession session){
+        for (int j = 0; j < session.getField().length; j++) {
+            String result = "";
+            for (int i = 0; i < session.getField().length; i++) {
+                result = result.concat(String.valueOf(session.getField()[i][j]));
+            }
+            if (result.matches(".*[" + signature + "]{3}.*")){
+                session.setGameStatus(1);
+                break;
+            }
+        }
+    }
+    private static void checkForLeftDiagonalWin(char signature, GameSession session){
+        for (int i = 0; i < session.getField().length; i++) {
+            String result = "";
             result = result.concat(String.valueOf(session.getField()[i][i]));
             if (result.matches(".*[" + signature + "]{3}.*")){
-                gameStatus = 1;
+                session.setGameStatus(1);
                 break;
             }
         }
+    }private static void checkForRightDiagonalWin(char signature, GameSession session){
+        for (int i = session.getField().length - 1; i >= 0 ; i--) {
+            String result = "";
+            result = result.concat(String.valueOf(session.getField()[i][i]));
+            if (result.matches(".*[" + signature + "]{3}.*")){
+                session.setGameStatus(1);
+                break;
+            }
+        }
+    }
+
+    public static boolean moveValidation(int x, int y, GameSession session){
+        return (x > 0 && y > 0 &&
+                x <= session.getField().length &&
+                y <= session.getField().length &&
+                session.getField()[--x][--y] == '\u00B7');
     }
 
 

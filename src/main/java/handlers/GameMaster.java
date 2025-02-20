@@ -6,6 +6,7 @@ import entities.Player;
 import entities.RobotPlayer;
 import exceptions.WrongUserInputException;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.random.RandomGenerator;
 
@@ -38,36 +39,54 @@ public class GameMaster {
                 System.out.println(w.getMessage());
             }
         }
+        System.out.println("Set a field size.");
+        while(scan.hasNextInt()){
+            try {
+                try{
+                    int size = scan.nextInt();
+                    if (size < 3){
+                        throw new WrongUserInputException("Field size must be greater then 3.");
+                    }else {
+                        session.setField(size);
+                        break;
+                    }
+                }catch (InputMismatchException i){
+                    throw new WrongUserInputException("Number required!");
+                }
+            }catch (WrongUserInputException w){
+                System.out.println(w.getMessage());
+            }
+        }
     }
 
     private void setPlayers(String playerFirst, String playerSecond){
         System.out.printf("%s name is:", playerFirst);
-        session.playerONE = new HumanPlayer(scan.next());
+        session.setPlayerONE(new HumanPlayer(scan.next()));
         if (playerSecond.equals("robot")){
-            session.playerTWO = new RobotPlayer();
+            session.setPlayerTWO(new RobotPlayer());
         }else {
             System.out.printf("%s name is:", playerSecond);
             String name = scan.next();
-            name = name.equals(session.playerONE.getName()) ? name.concat("_2") : name;
-            session.playerTWO = new HumanPlayer(name); // add name different from the first player
+            name = name.equals(session.getPlayerONE().getName()) ? name.concat("_2") : name;
+            session.setPlayerTWO(new HumanPlayer(name)); // add name different from the first player
         }
-        System.out.printf("Choose your symbol, %s.\n", session.playerONE.getName());
+        System.out.printf("Choose your symbol, %s.\n", session.getPlayerONE().getName());
         System.out.println("X or O?");
         while (scan.hasNext()){
             String chosen = scan.next().toUpperCase();
             try {
                 if (chosen.equals("X") || chosen.equals("O")){
-                    session.playerONE.setSignature(chosen.charAt(0));
+                    session.getPlayerONE().setSignature(chosen.charAt(0));
                     break;
                 }else throw new WrongUserInputException("Please, choose correctly.");
             }catch (WrongUserInputException w){
                 System.out.println(w.getMessage());
             }
         }
-        session.playerTWO.setSignature(session.playerONE.getSignature() == 'X' ? 'O' : 'X');
-        System.out.printf("%s chose %c. %s got %c\n", session.playerONE.getName(),
-                session.playerONE.getSignature(), session.playerTWO.getName(),
-                session.playerTWO.getSignature());
+        session.getPlayerTWO().setSignature(session.getPlayerONE().getSignature() == 'X' ? 'O' : 'X');
+        System.out.printf("%s chose %c. %s got %c\n", session.getPlayerONE().getName(),
+                session.getPlayerONE().getSignature(), session.getPlayerTWO().getName(),
+                session.getPlayerTWO().getSignature());
     }
 
     public void game(){
@@ -75,28 +94,39 @@ public class GameMaster {
         if (session.getGameMode() == 1){
             setPlayers("First player", "Second player");
         } else if (session.getGameMode() == 2) {
-            setPlayers("Your", "Robot");
+            setPlayers("Your", "robot");
         }
-        int firstMove = randomizer();
-        System.out.println(firstMove == 1 ? session.playerONE.getName() : session.playerTWO.getName());
-        humanOpponentMode(firstMove);
+        String winner = action(randomizer());
+        if (session.getGameStatus() == 1){
+            session.getWinStat().put(winner, (session.getWinStat().get(winner) + 1));
+            System.out.println(winner + " won " + session.getWinStat().get(winner) + " time(s)");
+        } else if (session.getGameStatus() == -1){
+            System.out.println("It's a draw!");
+        }
     }
 
-    private void humanOpponentMode(int firstMove){
+    private String action(int firstMove){
         Player[] players = {session.getPlayerONE(), session.getPlayerTWO()};
-        System.out.println("Set a field size.");
-        session.setField(scan.nextInt());
         System.out.println("Game started!");
         session.showField();
         String winner = "Friendship";
-        int gameStatus = 0; //-1 draw, 0 in progress, 1 victory
         int i = firstMove;
-        while(gameStatus == 0){
+        while(session.getGameStatus() == 0){
             try{
-                System.out.printf("%s, your turn.", players[i].getName());
-                FieldActionManager.move(scan.nextInt(), scan.nextInt(), players[i], session);
+                if (players[i] instanceof HumanPlayer){
+                    System.out.printf("%s, your turn (input row and column separately).\n", players[i].getName());
+                    try{
+                        players[i].move(scan, session);
+                    }catch (InputMismatchException n){
+                        throw new WrongUserInputException("Only numeric coordinates are acceptable!");
+                    }
+                    System.out.printf("Accepted! %s made his(her) move.\n", players[i].getName());
+                }else if(players[i] instanceof RobotPlayer){
+                    players[i].move(scan, session);
+                    System.out.printf("%s made its move.\n", players[i].getName());
+                }
                 session.showField();
-                FieldActionManager.check(session.playerONE, gameStatus, session);
+                FieldActionManager.check(players[i].getSignature(), session);
                 winner = players[i].getName();
                 i++;
             }catch (WrongUserInputException w){
@@ -105,20 +135,24 @@ public class GameMaster {
                 i = 0;
             }
         }
-        String gameResult = winner + " won " + session.getWinStat().get(winner) + " time(s)";
-        System.out.println(gameStatus == 1 ? gameResult: "It's a draw!");
+        return winner;
     }
 
     private int randomizer (){
         System.out.println("And first move makes...");
+        int firstMove = RandomGenerator.getDefault().nextInt(2);;
         try{
             for (int i = 0; i < 3; i++) {
                 Thread.sleep(500);
-                System.out.println("* ");
+                System.out.println("*");
             }
+            Thread.sleep(1000);
+            System.out.println(firstMove == 0 ? session.getPlayerONE().getName() : session.getPlayerTWO().getName());
+            System.out.println("---------------------------");
+            Thread.sleep(1000);
         }catch (InterruptedException e){
             System.out.println(e.getMessage());
         }
-        return RandomGenerator.getDefault().nextInt(2);
+        return firstMove;
     }
 }

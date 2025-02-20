@@ -24,6 +24,7 @@ public class PlayTicTacToe {
                     master.game();
                 }else if (chosen == 2){
                     System.out.println("Goodbye!");
+                    break;
                 }else throw new WrongUserInputException("Please, choose correctly.");
             }
         }catch (WrongUserInputException w){

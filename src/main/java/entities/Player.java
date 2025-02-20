@@ -1,6 +1,8 @@
 package entities;
 
-import java.util.Objects;
+import exceptions.WrongUserInputException;
+
+import java.util.Scanner;
 
 public abstract class Player {
     private String name;
@@ -21,4 +23,6 @@ public abstract class Player {
     public void setSignature(char signature) {
         this.signature = signature;
     }
+
+    abstract public void move(Scanner scan, GameSession session) throws WrongUserInputException;
 }
