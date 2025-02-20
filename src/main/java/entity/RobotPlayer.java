@@ -1,12 +1,12 @@
-package entities;
+package entity;
 
-import exceptions.WrongUserInputException;
-import handlers.FieldActionManager;
+import exception.WrongUserInputException;
+import handler.FieldActionManager;
 
 import java.util.Scanner;
 import java.util.random.RandomGenerator;
 
-public class RobotPlayer extends Player{
+public class RobotPlayer extends Player {
 
     public RobotPlayer() {
         super("T-800");
@@ -17,7 +17,7 @@ public class RobotPlayer extends Player{
         RandomGenerator rand = RandomGenerator.getDefault();
         int x = rand.nextInt(1, 4);
         int y = rand.nextInt(1, 4);
-        if (FieldActionManager.moveValidation(x, y, session)){
+        if (session.getActionManager().moveValidation(x, y, session)) {
             session.getField()[--x][--y] = this.getSignature();
             session.counter++;
         } else {

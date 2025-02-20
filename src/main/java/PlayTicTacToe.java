@@ -1,8 +1,8 @@
-import entities.GameSession;
-import exceptions.WrongUserInputException;
-import handlers.GameMaster;
+import entity.GameSession;
+import exception.WrongUserInputException;
+import handler.FieldActionManager;
+import handler.GameMaster;
 
-import java.io.IOException;
 import java.util.Scanner;
 
 public class PlayTicTacToe {

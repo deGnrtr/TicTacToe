@@ -1,11 +1,11 @@
-package entities;
+package entity;
 
-import exceptions.WrongUserInputException;
-import handlers.FieldActionManager;
+import exception.WrongUserInputException;
+import handler.FieldActionManager;
 
 import java.util.Scanner;
 
-public class HumanPlayer extends Player{
+public class HumanPlayer extends Player {
     public HumanPlayer(String name) {
         super(name);
     }
@@ -14,7 +14,7 @@ public class HumanPlayer extends Player{
     public void move(Scanner scanner, GameSession session) throws WrongUserInputException {
         int x = scanner.nextInt();
         int y = scanner.nextInt();
-        if (FieldActionManager.moveValidation(x, y, session)){
+        if (session.getActionManager().moveValidation(x, y, session)) {
             session.getField()[--x][--y] = this.getSignature();
             session.counter++;
         } else {

@@ -1,19 +1,15 @@
-package entities;
+package entity;
 
-import exceptions.WrongUserInputException;
+import exception.WrongUserInputException;
 
 import java.util.Scanner;
 
 public abstract class Player {
-    private String name;
+    public String NAME;
     private char signature;
 
     protected Player(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
+        this.NAME = name;
     }
 
     public char getSignature() {
