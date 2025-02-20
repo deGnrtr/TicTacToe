@@ -20,7 +20,7 @@ public class GameMaster {
         this.scan = scan;
     }
 
-    private void initGame(){
+    public void initGame(){
         System.out.println("""
                 Hello there \u263A! Wanna play a tic-tac-toe game?
                 Please, choose the game mode:
@@ -59,16 +59,17 @@ public class GameMaster {
         }
     }
 
-    private void setPlayers(String playerFirst, String playerSecond){
-        System.out.printf("%s name is:", playerFirst);
+    public void setPlayers(){
+        System.out.println("First player name is:");
         session.setPlayerONE(new HumanPlayer(scan.next()));
-        if (playerSecond.equals("robot")){
+        if (session.getGameMode() == 2){
             session.setPlayerTWO(new RobotPlayer());
         }else {
-            System.out.printf("%s name is:", playerSecond);
+            System.out.println("Second player name is:");
             String name = scan.next();
-            name = name.equals(session.getPlayerONE().getName()) ? name.concat("_2") : name;
-            session.setPlayerTWO(new HumanPlayer(name)); // add name different from the first player
+            name = name.equals(session.getPlayerONE().getName()) ?
+                    name.concat("_2") : name; // add name different from the first player
+            session.setPlayerTWO(new HumanPlayer(name));
         }
         System.out.printf("Choose your symbol, %s.\n", session.getPlayerONE().getName());
         System.out.println("X or O?");
@@ -90,12 +91,6 @@ public class GameMaster {
     }
 
     public void game(){
-        initGame();
-        if (session.getGameMode() == 1){
-            setPlayers("First player", "Second player");
-        } else if (session.getGameMode() == 2) {
-            setPlayers("Your", "robot");
-        }
         String winner = action(randomizer());
         if (session.getGameStatus() == 1){
             session.getWinStat().put(winner, (session.getWinStat().get(winner) + 1));
@@ -108,7 +103,6 @@ public class GameMaster {
     private String action(int firstMove){
         Player[] players = {session.getPlayerONE(), session.getPlayerTWO()};
         System.out.println("Game started!");
-        session.showField();
         String winner = "Friendship";
         int i = firstMove;
         while(session.getGameStatus() == 0){
@@ -136,6 +130,24 @@ public class GameMaster {
             }
         }
         return winner;
+    }
+
+    public boolean askForAnotherOne() throws WrongUserInputException{
+        System.out.println("""
+                One more?
+                1 - Yes
+                2 - No
+                """);
+        int chosen = scan.nextInt();
+        if (chosen == 1){
+            session.reset();
+            return true;
+        }else if (chosen == 2) {
+            System.out.println("Goodbye!");
+        }else {
+            throw new WrongUserInputException("Choose from listed options!");
+        }
+        return false;
     }
 
     private int randomizer (){

@@ -47,21 +47,17 @@ public class GameSession {
     }
 
     public void setField(int size){
-        if (field == null){
-            field = new char[size][size];
-            for (int i = 0; i < size; i++) {
-                for (int j = 0; j < size; j++) {
-                    field[i][j] = '\u00B7';
-                }
+        field = new char[size][size];
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                field[i][j] = '\u00B7';
             }
         }
     }
 
     public void reset(){
-        field = null;
+        setField(field.length);
         counter = 0;
-        playerONE = null;
-        playerTWO = null;
         gameStatus = 0;
     }
     public char[][] getField() {
