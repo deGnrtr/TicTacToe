@@ -1,7 +1,9 @@
-package entity;
+package entity.player;
 
+import entity.game.GameSession;
 import exception.WrongUserInputException;
-import handler.FieldActionManager;
+import handler.field.FieldActionManager;
+import handler.message.ErrorMessages;
 
 import java.util.Scanner;
 
@@ -16,9 +18,9 @@ public class HumanPlayer extends Player {
         int y = scanner.nextInt();
         if (actionManager.moveValidation(x, y)) {
             session.getField()[--x][--y] = this.getSignature();
-            session.counter++;
+            session.moveCounter++;
         } else {
-            throw new WrongUserInputException("Wrong position. Try again, please.");
+            throw new WrongUserInputException(ErrorMessages.WRONG_POSITION.toString());
         }
     }
 }

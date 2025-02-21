@@ -1,6 +1,6 @@
-import entity.GameSession;
+import entity.game.GameSession;
 import exception.WrongUserInputException;
-import handler.GameMaster;
+import handler.field.GameMaster;
 
 import java.util.Scanner;
 

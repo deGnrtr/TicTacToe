@@ -1,26 +1,29 @@
-package handler;
+package handler.field;
 
-import entity.GameSession;
+import entity.game.GameSession;
+import entity.game.GameStatus;
 
 public class FieldActionManager {
     
     private final GameSession CURRENT_SESSION;
+    private String winCondition;
     
     public FieldActionManager(GameSession CURRENT_SESSION) {
         this.CURRENT_SESSION = CURRENT_SESSION;
     }
 
     public void check(char signature) {
+        winCondition = calculateWinCondition(signature);
         checkForDraw();
-        checkForHorizontalWin(signature);
-        checkForVerticalWin(signature);
-        checkForLeftDiagonalWin(signature);
-        checkForRightDiagonalWin(signature);
+        checkForHorizontalWin();
+        checkForVerticalWin();
+        checkForLeftDiagonalWin();
+        checkForRightDiagonalWin();
     }
 
     private void checkForDraw() {
-        if (CURRENT_SESSION.counter == Math.pow(CURRENT_SESSION.getField()[0].length, 2)) {
-            CURRENT_SESSION.setGameStatus(-1);
+        if (CURRENT_SESSION.moveCounter == Math.pow(CURRENT_SESSION.getField()[0].length, 2)) {
+            CURRENT_SESSION.setCurrentGameStatus(GameStatus.DRAW);
         }
     }
 
@@ -28,49 +31,49 @@ public class FieldActionManager {
         return ".*[" + signature + "]{ " + CURRENT_SESSION.getField()[0].length + ".*";
     }
 
-    private void checkForHorizontalWin(char signature) {
+    private void checkForHorizontalWin() {
         for (int i = 0; i < CURRENT_SESSION.getField().length; i++) {
             String result = "";
             for (int j = 0; j < CURRENT_SESSION.getField().length; j++) {
                 result = result.concat(String.valueOf(CURRENT_SESSION.getField()[i][j]));
             }
-            if (result.matches(calculateWinCondition(signature))) {
-                CURRENT_SESSION.setGameStatus(1);
+            if (result.matches(winCondition)) {
+                CURRENT_SESSION.setCurrentGameStatus(GameStatus.VICTORY);
                 break;
             }
         }
     }
 
-    private void checkForVerticalWin(char signature) {
+    private void checkForVerticalWin() {
         for (int j = 0; j < CURRENT_SESSION.getField().length; j++) {
             String result = "";
             for (int i = 0; i < CURRENT_SESSION.getField().length; i++) {
                 result = result.concat(String.valueOf(CURRENT_SESSION.getField()[i][j]));
             }
-            if (result.matches(calculateWinCondition(signature))) {
-                CURRENT_SESSION.setGameStatus(1);
+            if (result.matches(winCondition)) {
+                CURRENT_SESSION.setCurrentGameStatus(GameStatus.VICTORY);
                 break;
             }
         }
     }
 
-    private void checkForLeftDiagonalWin(char signature) {
+    private void checkForLeftDiagonalWin() {
         for (int i = 0; i < CURRENT_SESSION.getField().length; i++) {
             String result = "";
             result = result.concat(String.valueOf(CURRENT_SESSION.getField()[i][i]));
-            if (result.matches(calculateWinCondition(signature))) {
-                CURRENT_SESSION.setGameStatus(1);
+            if (result.matches(winCondition)) {
+                CURRENT_SESSION.setCurrentGameStatus(GameStatus.VICTORY);
                 break;
             }
         }
     }
 
-    private void checkForRightDiagonalWin(char signature) {
+    private void checkForRightDiagonalWin() {
         for (int i = CURRENT_SESSION.getField().length - 1; i >= 0; i--) {
             String result = "";
             result = result.concat(String.valueOf(CURRENT_SESSION.getField()[i][i]));
-            if (result.matches(calculateWinCondition(signature))) {
-                CURRENT_SESSION.setGameStatus(1);
+            if (result.matches(winCondition)) {
+                CURRENT_SESSION.setCurrentGameStatus(GameStatus.VICTORY);
                 break;
             }
         }

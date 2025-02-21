@@ -1,7 +1,8 @@
-package entity;
+package entity.player;
 
+import entity.game.GameSession;
 import exception.WrongUserInputException;
-import handler.FieldActionManager;
+import handler.field.FieldActionManager;
 
 import java.util.Scanner;
 

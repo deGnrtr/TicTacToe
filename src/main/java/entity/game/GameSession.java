@@ -1,23 +1,25 @@
-package entity;
+package entity.game;
+
+import entity.player.Player;
 
 import java.util.HashMap;
 
 public class GameSession {
     private final HashMap<String, Integer> winStat = new HashMap<>();
-    public int counter;
+    public int moveCounter;
     private int gameMode;
     private char[][] field;
     private Player playerONE;
     private Player playerTWO;
-    private int gameStatus = 0; //-1 draw, 0 in progress, 1 victory
+    private GameStatus currentGameStatus;
     public final char FIELD_FILLER = '\u00B7';
 
-    public int getGameStatus() {
-        return gameStatus;
+    public GameStatus getCurrentGameStatus() {
+        return currentGameStatus;
     }
 
-    public void setGameStatus(int gameStatus) {
-        this.gameStatus = gameStatus;
+    public void setCurrentGameStatus(GameStatus currentGameStatus) {
+        this.currentGameStatus = currentGameStatus;
     }
 
     public int getGameMode() {
@@ -65,8 +67,8 @@ public class GameSession {
 
     public void reset() {
         setField(field.length);
-        counter = 0;
-        gameStatus = 0;
+        moveCounter = 0;
+        currentGameStatus = GameStatus.IN_PROGRESS;
     }
 
     public void showField() {
