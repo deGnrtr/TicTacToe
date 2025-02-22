@@ -36,7 +36,7 @@ public class GameSession {
 
     public void setPlayerONE(Player playerONE) {
         this.playerONE = playerONE;
-        winStat.put(playerONE.NAME, 0);
+        winStat.put(playerONE.getNAME(), 0);
     }
 
     public Player getPlayerTWO() {
@@ -45,7 +45,7 @@ public class GameSession {
 
     public void setPlayerTWO(Player playerTWO) {
         this.playerTWO = playerTWO;
-        winStat.put(playerTWO.NAME, 0);
+        winStat.put(playerTWO.getNAME(), 0);
     }
 
     public char[][] getField() {

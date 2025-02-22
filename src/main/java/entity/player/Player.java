@@ -7,7 +7,7 @@ import handler.field.FieldActionManager;
 import java.util.Scanner;
 
 public abstract class Player {
-    public String NAME;
+    private final String NAME;
     private char signature;
 
     protected Player(String name) {
@@ -23,4 +23,8 @@ public abstract class Player {
     }
 
     abstract public void move(Scanner scan, FieldActionManager actionManager, GameSession session) throws WrongUserInputException;
+
+    public String getNAME() {
+        return NAME;
+    }
 }
