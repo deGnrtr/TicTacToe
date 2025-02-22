@@ -18,7 +18,7 @@ public class HumanPlayer extends Player {
         int y = scanner.nextInt();
         if (actionManager.moveValidation(x, y)) {
             session.getField()[--x][--y] = this.getSignature();
-            session.moveCounter++;
+            session.setMoveCounter(session.getMoveCounter() + 1);
         } else {
             throw new WrongUserInputException(ErrorMessages.WRONG_POSITION.toString());
         }

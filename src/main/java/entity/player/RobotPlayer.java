@@ -21,7 +21,7 @@ public class RobotPlayer extends Player {
         int y = rand.nextInt(1, 4);
         if (actionManager.moveValidation(x, y)) {
             session.getField()[--x][--y] = this.getSignature();
-            session.moveCounter++;
+            session.setMoveCounter(session.getMoveCounter() + 1);
         } else {
             throw new WrongUserInputException(ErrorMessages.MACHINE_THINKING.toString());
         }

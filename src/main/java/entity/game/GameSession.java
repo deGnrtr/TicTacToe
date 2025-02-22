@@ -6,13 +6,13 @@ import java.util.HashMap;
 
 public class GameSession {
     private final HashMap<String, Integer> winStat = new HashMap<>();
-    public int moveCounter;
+    private int moveCounter;
     private int gameMode;
     private char[][] field;
     private Player playerONE;
     private Player playerTWO;
     private GameStatus currentGameStatus = GameStatus.IN_PROGRESS;
-    public final char FIELD_FILLER = '\u00B7';
+    public static final char FIELD_FILLER = '\u00B7';
 
     public GameStatus getCurrentGameStatus() {
         return currentGameStatus;
@@ -80,5 +80,13 @@ public class GameSession {
             }
             System.out.print("\n");
         }
+    }
+
+    public int getMoveCounter() {
+        return moveCounter;
+    }
+
+    public void setMoveCounter(int moveCounter) {
+        this.moveCounter = moveCounter;
     }
 }

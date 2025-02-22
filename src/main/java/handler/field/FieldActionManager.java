@@ -22,7 +22,7 @@ public class FieldActionManager {
     }
 
     private void checkForDraw() {
-        if (CURRENT_SESSION.moveCounter == Math.pow(CURRENT_SESSION.getField()[0].length, 2)) {
+        if (CURRENT_SESSION.getMoveCounter() == Math.pow(CURRENT_SESSION.getField()[0].length, 2)) {
             CURRENT_SESSION.setCurrentGameStatus(GameStatus.DRAW);
         }
     }
@@ -80,6 +80,6 @@ public class FieldActionManager {
     }
 
     public boolean moveValidation(int x, int y) {
-        return (x > 0 && y > 0 && x <= CURRENT_SESSION.getField().length && y <= CURRENT_SESSION.getField().length && CURRENT_SESSION.getField()[--x][--y] == CURRENT_SESSION.FIELD_FILLER);
+        return (x > 0 && y > 0 && x <= CURRENT_SESSION.getField().length && y <= CURRENT_SESSION.getField().length && CURRENT_SESSION.getField()[--x][--y] == GameSession.FIELD_FILLER);
     }
 }
