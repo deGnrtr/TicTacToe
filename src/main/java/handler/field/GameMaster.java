@@ -91,7 +91,7 @@ public class GameMaster {
                 secondNewPlayer.NAME, secondNewPlayer.getSignature());
     }
 
-    public void game() {
+    public void game() throws WrongUserInputException{
         String winner = action(randomizer());
         if (CURRENT_SESSION.getCurrentGameStatus().equals(GameStatus.VICTORY)) {
             CURRENT_SESSION.getWinStat().put(winner, (CURRENT_SESSION.getWinStat().get(winner) + 1));
@@ -101,35 +101,29 @@ public class GameMaster {
         }
     }
 
-    private String action(int firstMove) {
-        Player[] players = {CURRENT_SESSION.getPlayerONE(), CURRENT_SESSION.getPlayerTWO()};
+    private String action(boolean whoIsFirst) throws WrongUserInputException{
         System.out.println(InterfaceMessages.GAME_START);
+        boolean marker = whoIsFirst;
         String winner = "Friendship";
-        int i = firstMove;
         while (CURRENT_SESSION.getCurrentGameStatus().equals(GameStatus.IN_PROGRESS)) {
-            try {
-                if (players[i] instanceof HumanPlayer) {
-                    System.out.printf(InterfaceMessages.OFFER_TO_MOVE.toString(), players[i].NAME);
-                    try {
-                        players[i].move(INPUT_SCANNER, fieldActionManager, CURRENT_SESSION);
-                    } catch (InputMismatchException n) {
-                        throw new WrongUserInputException(ErrorMessages.WRONG_COORDINATES.toString());
-                    }
-                    System.out.printf(InterfaceMessages.MOVE_ACCEPTANCE.toString(), players[i].NAME);
-                } else if (players[i] instanceof RobotPlayer) {
-                    players[i].move(INPUT_SCANNER, fieldActionManager, CURRENT_SESSION);
-                    System.out.printf(InterfaceMessages.MOVE_REPORT.toString(), players[i].NAME);
+            Player currentPlayer = playerChanger(marker);
+            if (currentPlayer instanceof HumanPlayer) {
+                System.out.printf(InterfaceMessages.OFFER_TO_MOVE.toString(), currentPlayer.NAME);
+                try {
+                    currentPlayer.move(INPUT_SCANNER, fieldActionManager, CURRENT_SESSION);
+                } catch (InputMismatchException n) {
+                    throw new WrongUserInputException(ErrorMessages.WRONG_COORDINATES.toString());
                 }
-                CURRENT_SESSION.showField();
-                fieldActionManager.check(players[i].getSignature());
-                winner = players[i].NAME;
-                i++;
-            } catch (WrongUserInputException w) {
-                System.out.println(w.getMessage());
-            } catch (ArrayIndexOutOfBoundsException a) {
-                i = 0;
+                System.out.printf(InterfaceMessages.MOVE_ACCEPTANCE.toString(), currentPlayer.NAME);
+            } else if (currentPlayer instanceof RobotPlayer) {
+                currentPlayer.move(INPUT_SCANNER, fieldActionManager, CURRENT_SESSION);
+                    System.out.printf(InterfaceMessages.MOVE_REPORT.toString(), currentPlayer.NAME);
+                }
+            CURRENT_SESSION.showField();
+            fieldActionManager.check(currentPlayer.getSignature());
+            winner = currentPlayer.NAME;
+            marker = !marker;
             }
-        }
         return winner;
     }
 
@@ -147,7 +141,7 @@ public class GameMaster {
         return false;
     }
 
-    private int randomizer() {
+    private boolean randomizer() {
         String filler = "*";
         String divider = "---------------------------";
         System.out.println(InterfaceMessages.FIRST_MOVE_EXPECTING);
@@ -158,14 +152,17 @@ public class GameMaster {
                 System.out.println(filler);
             }
             Thread.sleep(1000);
-            Player player = CURRENT_SESSION.getPlayerTWO();
-            Player player1 = CURRENT_SESSION.getPlayerONE();
-            System.out.println(firstMove == 0 ? player1.NAME : player.NAME);
+            Player playerONE = CURRENT_SESSION.getPlayerONE();
+            Player playerTWO = CURRENT_SESSION.getPlayerTWO();
+            System.out.println(firstMove == 0 ? playerONE.NAME : playerTWO.NAME);
             System.out.println(divider);
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             System.out.println(e.getMessage());
         }
-        return firstMove;
+        return firstMove == 0;
+    }
+    private Player playerChanger(boolean marker) {
+        return marker ? CURRENT_SESSION.getPlayerONE() : CURRENT_SESSION.getPlayerTWO();
     }
 }
