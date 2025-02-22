@@ -24,35 +24,39 @@ public class GameMaster {
         this.INPUT_SCANNER = scan;
     }
 
-    public void initGame() {
+    public void initGame(){
         fieldActionManager = new FieldActionManager(CURRENT_SESSION);
         System.out.println(InterfaceMessages.WELCOMING);
         while (INPUT_SCANNER.hasNextInt()) {
-            int chosen = INPUT_SCANNER.nextInt();
-            try {
-                if (chosen == 1 || chosen == 2) {
-                    CURRENT_SESSION.setGameMode(chosen);
-                    break;
-                } else throw new WrongUserInputException(ErrorMessages.WRONG_CHOICE.toString());
-            } catch (WrongUserInputException w) {
+            try{
+                try {
+                    int chosen = INPUT_SCANNER.nextInt();
+                    if (chosen == 1 || chosen == 2) {
+                        CURRENT_SESSION.setGameMode(chosen);
+                        break;
+                    } else throw new WrongUserInputException(ErrorMessages.WRONG_CHOICE.toString());
+                } catch (InputMismatchException i) {
+                    throw new WrongUserInputException(ErrorMessages.WRONG_CHOICE.toString());
+                }
+            }catch (WrongUserInputException w){
                 System.out.println(w.getMessage());
             }
         }
         System.out.println(InterfaceMessages.FIELD_SIZE_SETTING);
         while (INPUT_SCANNER.hasNextInt()) {
-            try {
+            try{
                 try {
                     int size = INPUT_SCANNER.nextInt();
-                    if (size < 3) {
-                        throw new WrongUserInputException(ErrorMessages.SMALL_FIELD.toString());
-                    } else {
+                    if (size >= 3) {
                         CURRENT_SESSION.setField(size);
                         break;
+                    } else {
+                        throw new WrongUserInputException(ErrorMessages.SMALL_FIELD.toString());
                     }
                 } catch (InputMismatchException i) {
                     throw new WrongUserInputException(ErrorMessages.NOT_A_NUMBER.toString());
                 }
-            } catch (WrongUserInputException w) {
+            }catch (WrongUserInputException w){
                 System.out.println(w.getMessage());
             }
         }
@@ -64,6 +68,7 @@ public class GameMaster {
         Player firstNewPlayer = CURRENT_SESSION.getPlayerONE();
         if (CURRENT_SESSION.getGameMode() == 2) {
             CURRENT_SESSION.setPlayerTWO(new RobotPlayer());
+            System.out.println(InterfaceMessages.ROBOT_INTRODUCE);
         } else {
             System.out.println(InterfaceMessages.SECOND_PLAYER_SETTING);
             String name = INPUT_SCANNER.next();
@@ -74,15 +79,15 @@ public class GameMaster {
         Player secondNewPlayer = CURRENT_SESSION.getPlayerTWO();
         System.out.printf(InterfaceMessages.SYMBOL_SETTING.toString(), firstNewPlayer.NAME);
         char firstPlayableSymbol = 'X';
-        char secondPlayableSymbol = 'Y';
+        char secondPlayableSymbol = 'O';
         while (INPUT_SCANNER.hasNext()) {
-            char chosenSymbol = INPUT_SCANNER.next().toUpperCase().charAt(0);
-            try {
+            try{
+                char chosenSymbol = INPUT_SCANNER.next().toUpperCase().charAt(0);
                 if (chosenSymbol == firstPlayableSymbol || chosenSymbol == secondPlayableSymbol) {
                     firstNewPlayer.setSignature(chosenSymbol);
                     break;
-                } else throw new WrongUserInputException(ErrorMessages.WRONG_CHOICE.toString());
-            } catch (WrongUserInputException w) {
+                }else throw new WrongUserInputException(ErrorMessages.WRONG_CHOICE.toString());
+            }catch (WrongUserInputException w){
                 System.out.println(w.getMessage());
             }
         }
@@ -91,7 +96,7 @@ public class GameMaster {
                 secondNewPlayer.NAME, secondNewPlayer.getSignature());
     }
 
-    public void game() throws WrongUserInputException{
+    public void game() throws WrongUserInputException {
         String winner = action(randomizer());
         if (CURRENT_SESSION.getCurrentGameStatus().equals(GameStatus.VICTORY)) {
             CURRENT_SESSION.getWinStat().put(winner, (CURRENT_SESSION.getWinStat().get(winner) + 1));
@@ -101,24 +106,28 @@ public class GameMaster {
         }
     }
 
-    private String action(boolean whoIsFirst) throws WrongUserInputException{
+    private String action(boolean whoIsFirst) {
         System.out.println(InterfaceMessages.GAME_START);
         boolean marker = whoIsFirst;
         String winner = "Friendship";
         while (CURRENT_SESSION.getCurrentGameStatus().equals(GameStatus.IN_PROGRESS)) {
             Player currentPlayer = playerChanger(marker);
-            if (currentPlayer instanceof HumanPlayer) {
-                System.out.printf(InterfaceMessages.OFFER_TO_MOVE.toString(), currentPlayer.NAME);
-                try {
+            try{
+                if (currentPlayer instanceof HumanPlayer) {
+                    System.out.printf(InterfaceMessages.OFFER_TO_MOVE.toString(), currentPlayer.NAME);
+                    try {
+                        currentPlayer.move(INPUT_SCANNER, fieldActionManager, CURRENT_SESSION);
+                    } catch (InputMismatchException n) {
+                        throw new WrongUserInputException(ErrorMessages.WRONG_COORDINATES.toString());
+                    }
+                    System.out.printf(InterfaceMessages.MOVE_ACCEPTANCE.toString(), currentPlayer.NAME);
+                } else if (currentPlayer instanceof RobotPlayer) {
                     currentPlayer.move(INPUT_SCANNER, fieldActionManager, CURRENT_SESSION);
-                } catch (InputMismatchException n) {
-                    throw new WrongUserInputException(ErrorMessages.WRONG_COORDINATES.toString());
-                }
-                System.out.printf(InterfaceMessages.MOVE_ACCEPTANCE.toString(), currentPlayer.NAME);
-            } else if (currentPlayer instanceof RobotPlayer) {
-                currentPlayer.move(INPUT_SCANNER, fieldActionManager, CURRENT_SESSION);
                     System.out.printf(InterfaceMessages.MOVE_REPORT.toString(), currentPlayer.NAME);
                 }
+            } catch (WrongUserInputException w){
+                System.out.println(w.getMessage());
+            }
             CURRENT_SESSION.showField();
             fieldActionManager.check(currentPlayer.getSignature());
             winner = currentPlayer.NAME;

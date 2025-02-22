@@ -11,7 +11,7 @@ public class GameSession {
     private char[][] field;
     private Player playerONE;
     private Player playerTWO;
-    private GameStatus currentGameStatus;
+    private GameStatus currentGameStatus = GameStatus.IN_PROGRESS;
     public final char FIELD_FILLER = '\u00B7';
 
     public GameStatus getCurrentGameStatus() {

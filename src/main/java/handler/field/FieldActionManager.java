@@ -28,7 +28,7 @@ public class FieldActionManager {
     }
 
     private String calculateWinCondition(char signature) {
-        return ".*[" + signature + "]{ " + CURRENT_SESSION.getField()[0].length + ".*";
+        return ".*[" + signature + "]{" + CURRENT_SESSION.getField()[0].length + "}.*";
     }
 
     private void checkForHorizontalWin() {

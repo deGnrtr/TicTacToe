@@ -11,7 +11,7 @@ public enum InterfaceMessages {
     FIELD_SIZE_SETTING("Set a field size."),
     FIRST_PLAYER_SETTING("First player name is"),
     SECOND_PLAYER_SETTING("Second player name is:"),
-    SYMBOL_SETTING("Choose your symbol, %s.\nX or O?"),
+    SYMBOL_SETTING("Choose your symbol, %s.\nX or O?\n"),
     SHOW_ASSIGNED_SYMBOLS("%s chose %c. %s got %c\n"),
     GAME_END_DRAW("It's a draw!"),
     GAME_END_VICTORY("%s won %d time(s).\n"),
@@ -25,7 +25,8 @@ public enum InterfaceMessages {
                 2 - No
                 """),
     GOODBYE("Goodbye!"),
-    FIRST_MOVE_EXPECTING("And first move makes...");
+    FIRST_MOVE_EXPECTING("And first move makes..."),
+    ROBOT_INTRODUCE("Your opponent is T-800");
 
     private final String MESSAGE;
 
