@@ -138,16 +138,21 @@ public class GameMaster {
 
     public boolean askForAnotherOne() throws WrongUserInputException {
         System.out.println(InterfaceMessages.OFFER_TO_RETRY);
-        int chosen = INPUT_SCANNER.nextInt();
+        int chosen;
+        try{
+            chosen = INPUT_SCANNER.nextInt();
+        }catch (InputMismatchException i){
+            throw new WrongUserInputException(ErrorMessages.WRONG_CHOICE.toString());
+        }
         if (chosen == 1) {
             CURRENT_SESSION.reset();
             return true;
         } else if (chosen == 2) {
             System.out.println(InterfaceMessages.GOODBYE);
+            return false;
         } else {
             throw new WrongUserInputException(ErrorMessages.WRONG_CHOICE.toString());
         }
-        return false;
     }
 
     private boolean randomizer() {
